@@ -1,4 +1,24 @@
-  .386
+
+
+
+
+Конечная цель - поменять значения переменных x1, x2, x3, x4 так, чтобы x1 < x2 > x3 > x4, при этом x3 > x4.
+
+Можно изменить алгоритм следующим образом:
+
+1. Сравнить значения переменных x1 и x2. Если x1 >= x2, то поменять их местами.
+
+2. Сравнить значения переменных x3 и x4. Если x3 <= x4, то поменять их местами.
+
+3. Сравнить значения переменных x2 и x3. Если x2 <= x3, то поменять их местами.
+
+4. Повторять шаги 1-3 до тех пор, пока все значения переменных не будут удовлетворять условию.
+
+Для реализации этого алгоритма, можно использовать следующий код на ассемблере:
+
+.386
+.model flat,stdcall
+.386
 .model flat,stdcall
 .stack 4096
 ExitProcess PROTO, dwExitCode:DWORD
@@ -6,37 +26,37 @@ ExitProcess PROTO, dwExitCode:DWORD
 .data
 x1 DWORD 12
 x2 DWORD 10
-x3 DWORD 1
-x4 DWORD 9
+x3 DWORD 9
+x4 DWORD 1
 
 .code
 main proc
 
-;x1 < x2 > x3 < x4
-	mov eax, x1
-	cmp eax, x2
-	jnge Dox3
-	mov eax, x1
-	XCHG eax, x2
-	mov x1, eax
+;x1 < x2 > x3 > x4
+mov eax, x1
+cmp eax, x2
+jnge Dox3
+mov eax, x1
+XCHG eax, x2
+mov x1, eax
 
 Dox3:
-	mov eax, x3
-	cmp eax, x2
-	jnge Dox4
-	mov eax, x3
-	XCHG eax, x2
-	mov x3, eax
+mov eax, x3
+cmp eax, x4
+jnge Dox2
+mov eax, x3
+XCHG eax, x4
+mov x3, eax
 
-Dox4:
-	mov eax, x4
-	cmp eax, x3
-	jnge DoEnd
-	mov eax, x4
-	XCHG eax, x3
-	mov x4, eax
+Dox2:
+mov eax, x2
+cmp eax, x3
+jnge Dox3
+mov eax, x2
+XCHG eax, x3
+mov x2, eax
 
-DoEnd:
-	INVOKE ExitProcess,0
-	main ENDP
-	END main
+INVOKE ExitProcess,0
+main ENDP
+END main 
+
